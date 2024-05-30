@@ -1,4 +1,5 @@
 import { kv } from "@vercel/kv";
+import crypto from "crypto";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -7,31 +8,19 @@ export default async function handler(req, res) {
   }
 
   const body = req.body;
-  console.log("Received request body:", body); // Add this line
 
   try {
     let dataRequest = body;
     if (dataRequest && dataRequest.subject && dataRequest.jwt) {
-      console.log(
-        "Received request for FETCHING Salt for subject ",
-        dataRequest.subject
-      );
       let response = await getExisting(dataRequest);
       if (!response?.salt) {
-        console.log(
-          "Salt not found in KV store. Fetching from Mysten API. jwt = ",
-          dataRequest.jwt,
-          "subject = ",
-          dataRequest.subject
-        );
-        const saltFromMysten = await getSaltFromMystenAPI(dataRequest.jwt);
+        const saltFromMysten = generateNumericSalt();
 
         //storing new salt in DB
-        await kv.hset(dataRequest.subject, { salt: saltFromMysten });
+        // await kv.hset(dataRequest.subject, { salt: saltFromMysten });
 
         //returning response
         response = { subject: dataRequest.subject, salt: saltFromMysten };
-        console.log("response from mysten = ", response);
       }
       res
         .status(200)
@@ -49,26 +38,13 @@ export default async function handler(req, res) {
   }
 }
 
-async function getSaltFromMystenAPI(jwtEncoded) {
-  const url =
-    process.env.NEXT_PUBLIC_SALT_API ||
-    "https://salt.api.mystenlabs.com/get_salt";
-  const payload = { token: jwtEncoded };
-
-  const response = await fetch(url, {
-    method: "POST",
-    mode: "cors",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    referrerPolicy: "no-referrer",
-    body: JSON.stringify(payload),
-  });
-  const responseJson = await response.json();
-  return responseJson.salt;
+function generateNumericSalt() {
+  let salt = "";
+  while (salt.length < 32) {
+    salt += Math.floor(Math.random() * 10); // generate a random digit between 0 and 9
+  }
+  return salt;
 }
-
 async function getExisting(dataRequest) {
   let salt = null;
   try {

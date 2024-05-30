@@ -2,13 +2,11 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useState } from "react";
-// import decode from "jwt-decode";
 import * as jwtJsDecode from "jwt-js-decode";
 import { decode } from "jwt-js-decode";
-
 import axios from "axios";
 import { toBigIntBE } from "bigint-buffer";
-import { fromB64 } from "@mysten/bcs";
+import { fromB64, toB64 } from "@mysten/bcs";
 import {
   genAddressSeed,
   getZkLoginSignature,
@@ -19,6 +17,7 @@ import { Ed25519Keypair } from "@mysten/sui.js/keypairs/ed25519";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { Blocks } from "react-loader-spinner";
 import { toast } from "react-hot-toast";
+import { Buffer } from "buffer";
 
 const Home = () => {
   const [error, setError] = useState(null);
@@ -35,12 +34,70 @@ const Home = () => {
     typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
   const { suiClient } = useSui();
-
   const MINIMUM_BALANCE = 0.003;
+
+  function generateAndStoreEphemeralKeyPair() {
+    const keypair = Ed25519Keypair.generate();
+    const ephemeralPrivateKey = keypair.secretKey;
+    const ephemeralPublicKey = keypair.publicKey;
+
+    // Store only the first 32 bytes of the private key
+    const truncatedPrivateKey = ephemeralPrivateKey.slice(0, 32);
+
+    const ephemeralPrivateKeyBase64 =
+      Buffer.from(truncatedPrivateKey).toString("base64");
+    const ephemeralPublicKeyBase64 =
+      Buffer.from(ephemeralPublicKey).toString("base64");
+
+    localStorage.setItem(
+      "userKeyData",
+      JSON.stringify({
+        ephemeralPrivateKey: ephemeralPrivateKeyBase64,
+        ephemeralPublicKey: ephemeralPublicKeyBase64,
+      })
+    );
+  }
+
+  function ensureEphemeralKeyPair() {
+    const userKeyData = localStorage.getItem("userKeyData");
+    if (!userKeyData) {
+      console.log(
+        "No userKeyData found in localStorage. Generating new keypair."
+      );
+      generateAndStoreEphemeralKeyPair();
+    }
+  }
+
+  function getEphemeralKeyPair() {
+    const userKeyData = JSON.parse(localStorage.getItem("userKeyData"));
+
+    if (!userKeyData) {
+      throw new Error("userKeyData is missing from localStorage");
+    }
+
+    const ephemeralPrivateKeyBase64 = userKeyData.ephemeralPrivateKey;
+
+    // Log the retrieved base64 key
+
+    // Convert the base64 key back to a Uint8Array
+    let ephemeralKeyPairArray = Uint8Array.from(
+      Buffer.from(ephemeralPrivateKeyBase64, "base64")
+    );
+
+    // Ensure the secret key is 32 bytes
+    if (ephemeralKeyPairArray.length !== 32) {
+      ephemeralKeyPairArray = ephemeralKeyPairArray.slice(0, 32);
+    }
+
+    const ephemeralKeyPair = Ed25519Keypair.fromSecretKey(
+      ephemeralKeyPairArray
+    );
+    return { userKeyData, ephemeralKeyPair };
+  }
 
   async function getSalt(subject, jwtEncoded) {
     const getSaltRequest = { subject, jwt: jwtEncoded };
-    console.log("Sending request to get salt:", getSaltRequest); // Add this line
+
     const response = await axios.post("/api/userinfo/get/salt", getSaltRequest);
     if (response?.data.status == 200) {
       return response.data.salt;
@@ -57,73 +114,6 @@ const Home = () => {
     console.log("exp = " + decodedJwt.exp);
     console.log("nonce = " + decodedJwt.nonce);
     console.log("ephemeralPublicKey b64 =", userKeyData.ephemeralPublicKey);
-  }
-
-  async function executeTransactionWithZKP() {
-    setError(null);
-    setTransactionInProgress(true);
-    const decodedJwt = decode(jwtEncoded);
-    const { userKeyData, ephemeralKeyPair } = getEphemeralKeyPair();
-    const partialZkSignature = zkProof;
-
-    if (!partialZkSignature || !ephemeralKeyPair || !userKeyData) {
-      createRuntimeError("Transaction cannot proceed. Missing critical data.");
-      return;
-    }
-
-    const txb = new TransactionBlock();
-
-    txb.moveCall({
-      target: `0xf8294cd69d69d867c5a187a60e7095711ba237fad6718ea371bf4fbafbc5bb4b::teotest::create_weapon`,
-      arguments: [txb.pure("Zero Knowledge Proof Axe 9000"), txb.pure(66)],
-    });
-    txb.setSender(userAddress);
-
-    const signatureWithBytes = await txb.sign({
-      client: suiClient,
-      signer: ephemeralKeyPair,
-    });
-
-    const addressSeed = genAddressSeed(
-      BigInt(userSalt),
-      "sub",
-      decodedJwt.sub,
-      decodedJwt.aud
-    );
-
-    const zkSignature = getZkLoginSignature({
-      inputs: {
-        ...partialZkSignature,
-        addressSeed: addressSeed.toString(),
-      },
-      maxEpoch: userKeyData.maxEpoch,
-      userSignature: signatureWithBytes.signature,
-    });
-
-    suiClient
-      .executeTransactionBlock({
-        transactionBlock: signatureWithBytes.bytes,
-        signature: zkSignature,
-        options: {
-          showEffects: true,
-        },
-      })
-      .then((response) => {
-        if (response.effects?.status.status == "success") {
-          setTxDigest(response.digest);
-          setTransactionInProgress(false);
-        } else {
-          setTransactionInProgress(false);
-        }
-      })
-      .catch((error) => {
-        if (error.toString().includes("Signature is not valid")) {
-          createRuntimeError(
-            "Signature is not valid. Please generate a new one by clicking on 'Get new ZK Proof'"
-          );
-        }
-        setTransactionInProgress(false);
-      });
   }
 
   async function getZkProof(forceUpdate = false) {
@@ -162,19 +152,7 @@ const Home = () => {
     }
 
     setZkProof(proofResponse.data.zkp);
-
     setTransactionInProgress(false);
-  }
-
-  function getEphemeralKeyPair() {
-    const userKeyData = JSON.parse(localStorage.getItem("userKeyData"));
-    let ephemeralKeyPairArray = Uint8Array.from(
-      Array.from(fromB64(userKeyData.ephemeralPrivateKey))
-    );
-    const ephemeralKeyPair = Ed25519Keypair.fromSecretKey(
-      ephemeralKeyPairArray
-    );
-    return { userKeyData, ephemeralKeyPair };
   }
 
   async function checkIfAddressHasBalance(address) {
@@ -239,7 +217,7 @@ const Home = () => {
 
   async function loadRequiredData(encodedJwt) {
     const decodedJwt = decode(encodedJwt);
-    const subjectId = decodedJwt.payload.sub; // Access the sub field from the payload
+    const subjectId = decodedJwt.payload.sub;
 
     setSubjectID(subjectId);
     const userSalt = await getSalt(subjectId, encodedJwt);
@@ -266,6 +244,8 @@ const Home = () => {
     setError(null);
     const hash = new URLSearchParams(window.location.hash.slice(1));
     const jwt_token_encoded = hash.get("id_token");
+
+    ensureEphemeralKeyPair();
 
     const userKeyData = JSON.parse(localStorage.getItem("userKeyData"));
 
@@ -366,80 +346,8 @@ const Home = () => {
               </div>
             </div>
           ) : null}
-          {zkProof ? (
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <dt className="text-sm font-medium leading-6 text-gray-900">
-                ZK Proof (point A)
-              </dt>
-              <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                <span className="mr-5">
-                  {zkProof?.proofPoints?.a.toString().slice(0, 30)}...
-                </span>
-                <span className="ml-5">
-                  <button
-                    type="button"
-                    className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                    onClick={() => getZkProof(true)}
-                  >
-                    Get new ZK Proof
-                  </button>
-                </span>
-              </dd>
-            </div>
-          ) : null}
         </dl>
-        {zkProof && enoughBalance(userBalance) ? (
-          <div className="pt-5">
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              disabled={!userAddress}
-              onClick={() => executeTransactionWithZKP()}
-            >
-              Execute Transaction
-            </button>
-          </div>
-        ) : null}
       </div>
-      {txDigest ? (
-        <div className="flex flex-col items-center mt-5">
-          <h3>Transaction Completed!</h3>
-          <div id="contents" className="font-medium pb-6 pt-6">
-            <p>TxDigest = {txDigest}</p>
-          </div>
-          <div id="contents" className="font-medium pb-6">
-            <button
-              className="bg-gray-400 text-white px-4 py-2 rounded-md"
-              disabled={!userAddress}
-              onClick={() =>
-                window.open(
-                  `https://testnet.suivision.xyz/txblock/${txDigest}`,
-                  "_blank"
-                )
-              }
-            >
-              See it on Explorer
-            </button>
-          </div>
-        </div>
-      ) : null}
-      {transactionInProgress ? (
-        <div className="flex space-x-4 justify-center">
-          <Blocks
-            visible={true}
-            height="80"
-            width="80"
-            ariaLabel="blocks-loading"
-            wrapperStyle={{}}
-            wrapperClass="blocks-wrapper"
-          />
-        </div>
-      ) : null}
-      {error ? (
-        <div id="header" className="pb-5 pt-6 text-red-500 text-xl">
-          <h2>{error}</h2>
-        </div>
-      ) : null}
     </div>
   );
 };

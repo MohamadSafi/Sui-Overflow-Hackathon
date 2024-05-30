@@ -70,7 +70,7 @@ export default function Home() {
   }, []);
 
   return (
-    <a href={loginUrl} className="hover:text-blue-600 mr-44" target="_blank">
+    <a href={loginUrl} className="hover:text-blue-600 " target="_blank">
       <button className="bg-white text-gray-700 hover:text-gray-900 font-semibold py-2 px-4 border rounded-lg flex items-center space-x-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
