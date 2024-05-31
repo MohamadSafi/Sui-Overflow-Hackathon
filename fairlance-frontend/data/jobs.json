@@ -1,32 +1,322 @@
 [
   {
-    "jobTitle": "hello",
-    "skillsRequired": "niffer",
-    "jobDescription": "dasdasdasd",
-    "budget": "33",
-    "deadline": "2024-05-03",
-    "image": "hero.png"
+    "jobTitle": "Web Developer Needed",
+    "skillsRequired": "JavaScript, HTML, CSS",
+    "jobDescription": "Looking for a web developer to create a responsive website.",
+    "budget": "500",
+    "deadline": "2024-07-01",
+    "image": "picture1.jpeg"
   },
   {
-    "jobTitle": "hello",
-    "skillsRequired": "niffer",
-    "jobDescription": "dasdasdasd",
-    "budget": "33",
-    "deadline": "2024-05-03",
-    "image": "hero.png"
+    "jobTitle": "Graphic Designer",
+    "skillsRequired": "Photoshop, Illustrator",
+    "jobDescription": "Need a graphic designer to create marketing materials.",
+    "budget": "300",
+    "deadline": "2024-06-15",
+    "image": "picture2.jpeg"
   },
   {
-    "jobTitle": "ds",
-    "skillsRequired": "dsa",
-    "jobDescription": "sda",
-    "budget": "33",
-    "deadline": "2024-05-18"
+    "jobTitle": "Content Writer",
+    "skillsRequired": "SEO, Blogging",
+    "jobDescription": "Looking for a content writer to write SEO-friendly blog posts.",
+    "budget": "200",
+    "deadline": "2024-07-20",
+    "image": "picture3.jpeg"
   },
   {
-    "jobTitle": "323",
-    "skillsRequired": "3232",
-    "jobDescription": "3232323",
-    "budget": "22",
-    "deadline": "2024-05-03"
+    "jobTitle": "Mobile App Developer",
+    "skillsRequired": "React Native, Flutter",
+    "jobDescription": "Need a developer to build a cross-platform mobile app.",
+    "budget": "1000",
+    "deadline": "2024-08-01",
+    "image": "picture4.jpeg"
+  },
+  {
+    "jobTitle": "Digital Marketing Specialist",
+    "skillsRequired": "Google Ads, Social Media",
+    "jobDescription": "Looking for a digital marketer to manage ad campaigns.",
+    "budget": "700",
+    "deadline": "2024-06-30",
+    "image": "picture5.jpeg"
+  },
+  {
+    "jobTitle": "Data Analyst",
+    "skillsRequired": "Python, SQL",
+    "jobDescription": "Need a data analyst to interpret complex data sets.",
+    "budget": "800",
+    "deadline": "2024-07-25",
+    "image": "picture6.jpeg"
+  },
+  {
+    "jobTitle": "SEO Expert",
+    "skillsRequired": "SEO, Google Analytics",
+    "jobDescription": "Looking for an SEO expert to improve search engine rankings.",
+    "budget": "400",
+    "deadline": "2024-06-20",
+    "image": "picture7.jpeg"
+  },
+  {
+    "jobTitle": "Video Editor",
+    "skillsRequired": "Final Cut Pro, Premiere Pro",
+    "jobDescription": "Need a video editor to edit marketing videos.",
+    "budget": "500",
+    "deadline": "2024-08-05",
+    "image": "picture8.jpeg"
+  },
+  {
+    "jobTitle": "Virtual Assistant",
+    "skillsRequired": "Administrative Support, Email Management",
+    "jobDescription": "Looking for a virtual assistant to manage administrative tasks.",
+    "budget": "250",
+    "deadline": "2024-07-10",
+    "image": "picture9.jpeg"
+  },
+  {
+    "jobTitle": "Social Media Manager",
+    "skillsRequired": "Content Creation, Social Media Strategy",
+    "jobDescription": "Need a social media manager to handle social media accounts.",
+    "budget": "600",
+    "deadline": "2024-06-25",
+    "image": "picture10.jpeg"
+  },
+  {
+    "jobTitle": "Front-end Developer",
+    "skillsRequired": "React, CSS",
+    "jobDescription": "Looking for a front-end developer to build UI components.",
+    "budget": "700",
+    "deadline": "2024-07-15",
+    "image": "picture11.jpeg"
+  },
+  {
+    "jobTitle": "Back-end Developer",
+    "skillsRequired": "Node.js, Express",
+    "jobDescription": "Need a back-end developer to create RESTful APIs.",
+    "budget": "800",
+    "deadline": "2024-08-10",
+    "image": "picture12.jpeg"
+  },
+  {
+    "jobTitle": "UI/UX Designer",
+    "skillsRequired": "Figma, Sketch",
+    "jobDescription": "Looking for a UI/UX designer to design user interfaces.",
+    "budget": "650",
+    "deadline": "2024-07-05",
+    "image": "picture13.jpeg"
+  },
+  {
+    "jobTitle": "Machine Learning Engineer",
+    "skillsRequired": "Python, TensorFlow",
+    "jobDescription": "Need a machine learning engineer to develop AI models.",
+    "budget": "1500",
+    "deadline": "2024-08-15",
+    "image": "picture14.jpeg"
+  },
+  {
+    "jobTitle": "Blockchain Developer",
+    "skillsRequired": "Solidity, Ethereum",
+    "jobDescription": "Looking for a blockchain developer to create smart contracts.",
+    "budget": "1200",
+    "deadline": "2024-07-20",
+    "image": "picture15.jpeg"
+  },
+  {
+    "jobTitle": "Game Developer",
+    "skillsRequired": "Unity, C#",
+    "jobDescription": "Need a game developer to build a 3D game.",
+    "budget": "1000",
+    "deadline": "2024-09-01",
+    "image": "picture16.jpeg"
+  },
+  {
+    "jobTitle": "Database Administrator",
+    "skillsRequired": "MySQL, PostgreSQL",
+    "jobDescription": "Looking for a database administrator to manage databases.",
+    "budget": "700",
+    "deadline": "2024-08-01",
+    "image": "picture17.jpeg"
+  },
+  {
+    "jobTitle": "Copywriter",
+    "skillsRequired": "Copywriting, SEO",
+    "jobDescription": "Need a copywriter to write marketing copy.",
+    "budget": "300",
+    "deadline": "2024-07-10",
+    "image": "picture18.jpeg"
+  },
+  {
+    "jobTitle": "Technical Support Specialist",
+    "skillsRequired": "Customer Service, Troubleshooting",
+    "jobDescription": "Looking for a technical support specialist to assist customers.",
+    "budget": "400",
+    "deadline": "2024-07-25",
+    "image": "picture19.jpeg"
+  },
+  {
+    "jobTitle": "Project Manager",
+    "skillsRequired": "Project Management, Scrum",
+    "jobDescription": "Need a project manager to manage software development projects.",
+    "budget": "1000",
+    "deadline": "2024-08-05",
+    "image": "picture20.jpeg"
+  },
+  {
+    "jobTitle": "Salesforce Developer",
+    "skillsRequired": "Salesforce, Apex",
+    "jobDescription": "Looking for a Salesforce developer to customize Salesforce apps.",
+    "budget": "900",
+    "deadline": "2024-07-15",
+    "image": "picture21.jpeg"
+  },
+  {
+    "jobTitle": "DevOps Engineer",
+    "skillsRequired": "Docker, Kubernetes",
+    "jobDescription": "Need a DevOps engineer to manage CI/CD pipelines.",
+    "budget": "1100",
+    "deadline": "2024-08-20",
+    "image": "picture22.jpeg"
+  },
+  {
+    "jobTitle": "Cybersecurity Specialist",
+    "skillsRequired": "Network Security, Penetration Testing",
+    "jobDescription": "Looking for a cybersecurity specialist to secure our systems.",
+    "budget": "1300",
+    "deadline": "2024-09-01",
+    "image": "picture23.jpeg"
+  },
+  {
+    "jobTitle": "E-commerce Manager",
+    "skillsRequired": "Shopify, WooCommerce",
+    "jobDescription": "Need an e-commerce manager to manage online store operations.",
+    "budget": "600",
+    "deadline": "2024-07-05",
+    "image": "picture24.jpeg"
+  },
+  {
+    "jobTitle": "HR Manager",
+    "skillsRequired": "Recruitment, Employee Relations",
+    "jobDescription": "Looking for an HR manager to handle HR functions.",
+    "budget": "700",
+    "deadline": "2024-08-10",
+    "image": "picture25.jpeg"
+  },
+  {
+    "jobTitle": "Financial Analyst",
+    "skillsRequired": "Excel, Financial Modeling",
+    "jobDescription": "Need a financial analyst to analyze financial data.",
+    "budget": "800",
+    "deadline": "2024-07-20",
+    "image": "picture26.jpeg"
+  },
+  {
+    "jobTitle": "Product Manager",
+    "skillsRequired": "Product Management, Agile",
+    "jobDescription": "Looking for a product manager to lead product development.",
+    "budget": "1200",
+    "deadline": "2024-08-15",
+    "image": "picture27.jpeg"
+  },
+  {
+    "jobTitle": "Marketing Manager",
+    "skillsRequired": "Marketing Strategy, Campaign Management",
+    "jobDescription": "Need a marketing manager to plan and execute marketing campaigns.",
+    "budget": "900",
+    "deadline": "2024-07-25",
+    "image": "picture28.jpeg"
+  },
+  {
+    "jobTitle": "Business Analyst",
+    "skillsRequired": "Business Analysis, Requirements Gathering",
+    "jobDescription": "Looking for a business analyst to gather and analyze business requirements.",
+    "budget": "750",
+    "deadline": "2024-08-01",
+    "image": "picture29.jpeg"
+  },
+  {
+    "jobTitle": "Full Stack Developer",
+    "skillsRequired": "React, Node.js",
+    "jobDescription": "Need a full stack developer to build web applications.",
+    "budget": "1500",
+    "deadline": "2024-08-20",
+    "image": "picture30.jpeg"
+  },
+  {
+    "jobTitle": "Network Engineer",
+    "skillsRequired": "Networking, Cisco",
+    "jobDescription": "Looking for a network engineer to manage network infrastructure.",
+    "budget": "1000",
+    "deadline": "2024-09-05",
+    "image": "picture31.jpeg"
+  },
+  {
+    "jobTitle": "System Administrator",
+    "skillsRequired": "Linux, Windows Server",
+    "jobDescription": "Need a system administrator to manage IT systems.",
+    "budget": "900",
+    "deadline": "2024-08-10",
+    "image": "picture32.jpeg"
+  },
+  {
+    "jobTitle": "Technical Writer",
+    "skillsRequired": "Technical Writing, Documentation",
+    "jobDescription": "Looking for a technical writer to create technical documentation.",
+    "budget": "500",
+    "deadline": "2024-07-15",
+    "image": "picture33.jpeg"
+  },
+  {
+    "jobTitle": "Operations Manager",
+    "skillsRequired": "Operations Management, Process Improvement",
+    "jobDescription": "Need an operations manager to oversee business operations.",
+    "budget": "1100",
+    "deadline": "2024-08-25",
+    "image": "picture34.jpeg"
+  },
+  {
+    "jobTitle": "QA Engineer",
+    "skillsRequired": "Quality Assurance, Testing",
+    "jobDescription": "Looking for a QA engineer to test software applications.",
+    "budget": "700",
+    "deadline": "2024-09-01",
+    "image": "picture35.jpeg"
+  },
+  {
+    "jobTitle": "IT Support Specialist",
+    "skillsRequired": "Technical Support, Troubleshooting",
+    "jobDescription": "Need an IT support specialist to assist with IT issues.",
+    "budget": "500",
+    "deadline": "2024-07-20",
+    "image": "picture36.jpeg"
+  },
+  {
+    "jobTitle": "Recruiter",
+    "skillsRequired": "Recruitment, Interviewing",
+    "jobDescription": "Looking for a recruiter to find and hire talent.",
+    "budget": "600",
+    "deadline": "2024-08-05",
+    "image": "picture37.jpeg"
+  },
+  {
+    "jobTitle": "Data Scientist",
+    "skillsRequired": "Data Science, Machine Learning",
+    "jobDescription": "Need a data scientist to analyze and interpret complex data.",
+    "budget": "1400",
+    "deadline": "2024-09-10",
+    "image": "picture38.jpeg"
+  },
+  {
+    "jobTitle": "Customer Service Representative",
+    "skillsRequired": "Customer Service, Communication",
+    "jobDescription": "Looking for a customer service representative to handle customer inquiries.",
+    "budget": "400",
+    "deadline": "2024-07-30",
+    "image": "picture39.jpeg"
+  },
+  {
+    "jobTitle": "Legal Consultant",
+    "skillsRequired": "Legal Advice, Contract Law",
+    "jobDescription": "Need a legal consultant to provide legal advice and draft contracts.",
+    "budget": "1000",
+    "deadline": "2024-08-15",
+    "image": "picture40.jpeg"
   }
 ]
