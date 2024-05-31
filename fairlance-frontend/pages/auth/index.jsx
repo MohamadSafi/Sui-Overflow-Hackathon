@@ -21,6 +21,12 @@ import { Buffer } from "buffer";
 import { Box, Flex, Text, Button, Select, VStack } from "@chakra-ui/react";
 import Navbar from "../../components/Navbars/navbar";
 import RoleSelectionModal from "../../components/Custom/RoleModal";
+import Terminal from "react-terminal-ui";
+import { TerminalOutput, TerminalInput } from "react-terminal-ui";
+import Footer from "../../components/Navbars/footer";
+import EncryptButton from "../../components/Custom/EncryptButton";
+import { FiLogOut, FiEdit } from "react-icons/fi";
+import DashboardCards from "../../components/Custom/DashboardCards";
 
 const Home = () => {
   const [error, setError] = useState(null);
@@ -331,86 +337,96 @@ const Home = () => {
     setUserRole(role);
     setIsModalOpen(false);
   };
+
+  const toggelModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
   return (
     <>
       <Navbar />
-      <Flex className=" justify-center bg-[#061e30] py-10">
-        <Box className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-4xl h-auto">
-          <div className="px-4 sm:px-0">
-            <h3 className="text-lg font-semibold leading-7 text-white mb-4">
-              Profile Overview
-            </h3>
-            <p className="text-sm leading-6 text-gray-300 mb-6">
-              Login with zkLogin completed!
-            </p>
-          </div>
-          <VStack spacing={4} align="stretch">
+      <Flex className=" justify-center bg-[#061e30] py-10 ">
+        <Box
+          position="absolute"
+          top="4%"
+          left="40%"
+          width="300px"
+          height="300px"
+          bgGradient="radial(teal.500, transparent)"
+          filter="blur(150px)"
+          zIndex={1}
+        ></Box>
+        <Box
+          position="absolute"
+          top="20%"
+          left="0"
+          width="300px"
+          height="300px"
+          bgGradient="radial(blue.700, transparent)"
+          filter="blur(200px)"
+          zIndex={1}
+        ></Box>
+        <Box
+          position="absolute"
+          top="3%"
+          right="0"
+          zIndex={1}
+          width="300px"
+          height="300px"
+          bgGradient="radial(blue.700, transparent)"
+          filter="blur(200px)"
+        ></Box>
+        <Box
+          className="bg-[#061e30] rounded-lg  w-full max-w-6xl h-auto"
+          zIndex={2}
+        >
+          <Terminal name="User Profile" prompt="" height="400px">
             {userProfile && (
               <>
-                <Text className="text-sm leading-6 text-white">
-                  Name: {userProfile.name}
-                </Text>
-                <Text className="text-sm leading-6 text-white">
-                  Email: {userProfile.email}
-                </Text>
+                <TerminalOutput>{`Name: ${userProfile.name}`}</TerminalOutput>
+                <TerminalOutput>{`Email: ${userProfile.email}`}</TerminalOutput>
               </>
             )}
             {userAddress && (
-              <div className="flex justify-between items-center">
-                <Text className="text-sm leading-6 text-white">
-                  User Address
-                </Text>
-                <div className="flex items-center">
-                  <Text className="text-sm leading-6 text-white mr-4">
-                    {userAddress}
-                  </Text>
-                  <Button
-                    size="sm"
-                    bg={"#3a82d0"}
-                    colorScheme="teal"
-                    onClick={() => navigator.clipboard.writeText(userAddress)}
-                  >
-                    Copy
-                  </Button>
-                </div>
-              </div>
+              <TerminalOutput>{`User Address: ${userAddress}`}</TerminalOutput>
             )}
             {userAddress && (
-              <Text className="text-sm leading-6 text-white">
-                Balance: {userBalance.toFixed(4)} SUI
-              </Text>
+              <TerminalOutput>{`Balance: ${userBalance.toFixed(
+                4
+              )} SUI`}</TerminalOutput>
             )}
             {userSalt && (
               <>
-                <Text className="text-sm leading-6 text-white">
-                  User Salt: {userSalt}
-                </Text>
-                <Text className="text-sm leading-6 text-white">
-                  Subject ID: {subjectID}
-                </Text>
+                <TerminalOutput>{`User Salt: ${userSalt}`}</TerminalOutput>
+                <TerminalOutput>{`Subject ID: ${subjectID}`}</TerminalOutput>
               </>
             )}
-
             {userRole && (
-              <>
-                <Text className="text-sm leading-6 text-white">
-                  User Role: {userRole}
-                </Text>
-              </>
+              <TerminalOutput>{`Role: ${
+                userRole.charAt(0).toUpperCase() + userRole.slice(1)
+              }`}</TerminalOutput>
             )}
-            {/* <Select
-              placeholder="Select your role"
-              value={userRole}
-              onChange={(e) => setUserRole(e.target.value)}
-              className="text-sm leading-6 text-white bg-gray-700 border-gray-600"
-            >
-              <option value="client">Client</option>
-              <option value="freelancer">Freelancer</option>
-            </Select> */}
-            <Button colorScheme="red" onClick={handleLogout}>
+            <TerminalInput
+              onInput={(input) => {
+                if (input === "logout") handleLogout();
+              }}
+            />
+          </Terminal>
+          <Flex marginTop={8} justifyContent={"space-between"}>
+            {/* <Button colorScheme="red" onClick={handleLogout} width={"100%"}>
               Logout
-            </Button>
-          </VStack>
+            </Button> */}
+            <EncryptButton
+              targetText="Edit Role"
+              icon={FiEdit}
+              onClick={toggelModal}
+            />
+
+            <EncryptButton
+              targetText="Logout"
+              icon={FiLogOut}
+              onClick={handleLogout}
+            />
+          </Flex>
         </Box>
       </Flex>
       <RoleSelectionModal
@@ -418,6 +434,8 @@ const Home = () => {
         onClose={() => setIsModalOpen(false)}
         onSave={handleRoleSave}
       />
+      <DashboardCards />
+      <Footer />
     </>
   );
 };

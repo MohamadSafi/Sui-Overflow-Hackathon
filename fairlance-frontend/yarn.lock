@@ -2708,6 +2708,11 @@ react-hot-toast@^2.4.1:
   dependencies:
     goober "^2.1.10"
 
+react-icons@^5.2.1:
+  version "5.2.1"
+  resolved "https://registry.npmjs.org/react-icons/-/react-icons-5.2.1.tgz"
+  integrity sha512-zdbW5GstTzXaVKvGSyTaBalt7HSfuK5ovrzlpyiWHAFXndXTdd/1hdDHI4xBM1Mn7YriT6aqESucFl9kEXzrdw==
+
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
@@ -2758,6 +2763,11 @@ react-swipeable@^7.0.1:
   version "7.0.1"
   resolved "https://registry.npmjs.org/react-swipeable/-/react-swipeable-7.0.1.tgz"
   integrity sha512-RKB17JdQzvECfnVj9yDZsiYn3vH0eyva/ZbrCZXZR0qp66PBRhtg4F9yJcJTWYT5Adadi+x4NoG53BxKHwIYLQ==
+
+react-terminal-ui@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.npmjs.org/react-terminal-ui/-/react-terminal-ui-1.3.0.tgz"
+  integrity sha512-UhCDuYmvBFicduM3QxF5EQrI6ACt4coNt6bMgxX9BEr/v8NRFnYlwuPXtN4a5Q5yE8F090zsP9zIKZzZrxglZg==
 
 react@^18.3.1:
   version "18.3.1"
