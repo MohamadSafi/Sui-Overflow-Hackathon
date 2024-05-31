@@ -47,13 +47,19 @@ const AddJob = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const jobDataToSave = { ...jobData, image: jobData.image?.name };
+    const formData = new FormData();
+    formData.append("jobTitle", jobData.jobTitle);
+    formData.append("skillsRequired", jobData.skillsRequired);
+    formData.append("jobDescription", jobData.jobDescription);
+    formData.append("budget", jobData.budget);
+    formData.append("deadline", jobData.deadline);
+    if (jobData.image) {
+      formData.append("image", jobData.image);
+    }
+
     const response = await fetch("/api/saveJob", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(jobDataToSave),
+      body: formData,
     });
 
     if (response.ok) {
