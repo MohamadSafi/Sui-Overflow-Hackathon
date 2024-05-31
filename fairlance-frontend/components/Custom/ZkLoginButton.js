@@ -52,7 +52,7 @@ export default function Home() {
 
   useLayoutEffect(() => {
     prepareLogin().then((userKeyData) => {
-      const REDIRECT_URI = "http://localhost:3000/auth";
+      const REDIRECT_URI = getRedirectUri();
       const customRedirectUri = getRedirectUri();
       const params = new URLSearchParams({
         state: new URLSearchParams({
@@ -74,8 +74,6 @@ export default function Home() {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       const decodedToken = decode(token);
-      console.log("*****YOOOOOOO*******");
-      console.log(decodedToken);
       const userProfile = {
         name: decodedToken.payload.name,
         email: decodedToken.payload.email,
