@@ -18,6 +18,8 @@ import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { Blocks } from "react-loader-spinner";
 import { toast } from "react-hot-toast";
 import { Buffer } from "buffer";
+import { Box, Flex, border } from "@chakra-ui/react";
+import Navbar from "../../components/Navbars/navbar";
 
 const Home = () => {
   const [error, setError] = useState(null);
@@ -233,10 +235,16 @@ const Home = () => {
     const hasEnoughBalance = await checkIfAddressHasBalance(address);
     if (!hasEnoughBalance) {
       await giveSomeTestCoins(address);
-      toast.success(
-        "We've fetched some coins for you, so you can get started with Sui!",
-        { duration: 8000 }
-      );
+      // toast("As simple as that, You are now a part of us!", {
+      //   icon: "🥳",
+      //   duration: 3000,
+      //   style: {
+      //     borderRadius: "20px",
+      //     background: "#5046e4",
+      //     color: "#fff",
+      //     border: 0,
+      //   },
+      // });
     }
   }
 
@@ -261,6 +269,18 @@ const Home = () => {
 
     setJwtEncoded(jwt_token_encoded);
 
+    if (window.opener) {
+      console.log("jwt", jwt_token_encoded);
+      window.opener.postMessage(
+        { token: jwt_token_encoded, type: "google-token" },
+        window.location.origin
+      );
+      // window.close();
+    }
+
+    localStorage.setItem("jwtToken", jwt_token_encoded);
+    localStorage.setItem("isLoggedIn", "true");
+
     loadRequiredData(jwt_token_encoded);
   }, []);
 
@@ -276,79 +296,76 @@ const Home = () => {
   }
 
   return (
-    <div id="cb" className="space-y-12">
-      <div className="px-4 sm:px-0">
-        <h3 className="text-base font-semibold leading-7 text-gray-900">
-          Authenticated Area
-        </h3>
-        <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
-          Login with External Provider Completed
-        </p>
-      </div>
-      <div className="mt-6 border-t border-gray-100">
-        <dl className="divide-y divide-gray-100">
-          {userAddress ? (
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <dt className="text-sm font-medium leading-6 text-gray-900">
-                User Address
-              </dt>
-              <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                <span className="mr-5">{userAddress}</span>
-                <span className="ml-0">
-                  <button
-                    type="button"
-                    className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                    onClick={() => navigator.clipboard.writeText(userAddress)}
-                  >
-                    Copy
-                  </button>
-                </span>
-              </dd>
-            </div>
-          ) : null}
-          {userAddress ? (
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <dt className="text-sm font-medium leading-6 text-gray-900">
-                Balance
-              </dt>
-              <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                <span className="mr-5">{userBalance.toFixed(4)} SUI</span>
-                <span className="ml-5">
-                  <button
-                    type="button"
-                    className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                    disabled={!userAddress}
-                    onClick={() => giveSomeTestCoins(userAddress)}
-                  >
-                    Get Testnet Coins
-                  </button>
-                </span>
-              </dd>
-            </div>
-          ) : null}
-          {userSalt ? (
-            <div>
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-sm font-medium leading-6 text-gray-900">
-                  User Salt
-                </dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  <span className="mr-5">{userSalt}</span>
-                </dd>
-              </div>
-              <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-sm font-medium leading-6 text-gray-900">
-                  Subject ID
-                </dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                  <span className="mr-5">{subjectID}</span>
-                </dd>
-              </div>
-            </div>
-          ) : null}
-        </dl>
-      </div>
-    </div>
+    <>
+      <Navbar />
+      <Flex id="cb" className=" justify-center ">
+        <Box>
+          <div className="px-4 sm:px-0">
+            <h3 className="text-base font-semibold leading-7 text-white">
+              Profile overview
+            </h3>
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-white">
+              Login with zkLogin completed!
+            </p>
+          </div>
+          <div className="mt-6 border-t border-gray-100">
+            <dl className="divide-y divide-gray-100">
+              {userAddress ? (
+                <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <dt className="text-sm font-medium leading-6 text-white">
+                    User Address
+                  </dt>
+                  <dd className="mt-1 text-sm leading-6 text-white sm:col-span-2 sm:mt-0">
+                    <span className="mr-5">{userAddress}</span>
+                    <span className="ml-0">
+                      <button
+                        type="button"
+                        className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-black shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                        onClick={() =>
+                          navigator.clipboard.writeText(userAddress)
+                        }
+                      >
+                        Copy
+                      </button>
+                    </span>
+                  </dd>
+                </div>
+              ) : null}
+              {userAddress ? (
+                <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <dt className="text-sm font-medium leading-6 text-white">
+                    Balance
+                  </dt>
+                  <dd className="mt-1 text-sm leading-6 text-white sm:col-span-2 sm:mt-0">
+                    <span className="mr-5">{userBalance.toFixed(4)} SUI</span>
+                  </dd>
+                </div>
+              ) : null}
+              {userSalt ? (
+                <div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-medium leading-6 text-white">
+                      User Salt
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-white sm:col-span-2 sm:mt-0">
+                      <span className="mr-5">{userSalt}</span>
+                    </dd>
+                  </div>
+                  <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-medium leading-6 text-white">
+                      Subject ID
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-white sm:col-span-2 sm:mt-0">
+                      <span className="mr-5">{subjectID}</span>
+                    </dd>
+                  </div>
+                </div>
+              ) : null}
+            </dl>
+          </div>
+        </Box>
+      </Flex>
+    </>
   );
 };
 

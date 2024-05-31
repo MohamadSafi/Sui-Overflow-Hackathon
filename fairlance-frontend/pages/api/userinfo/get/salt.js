@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         const saltFromMysten = generateNumericSalt();
 
         //storing new salt in DB
-        // await kv.hset(dataRequest.subject, { salt: saltFromMysten });
+        await kv.hset(dataRequest.subject, { salt: saltFromMysten });
 
         //returning response
         response = { subject: dataRequest.subject, salt: saltFromMysten };
