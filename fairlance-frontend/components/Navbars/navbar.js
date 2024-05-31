@@ -11,9 +11,18 @@ const Navbar = () => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
       setisLoggedin(true);
-      setNavigation(["Add a job", "Browse Jobs", "About", "Blog"]);
+      setNavigation([
+        { name: "Add a job", href: "/addjob" },
+        { name: "Browse Jobs", href: "/browsejobs" },
+        { name: "About", href: "/about" },
+        { name: "Blog", href: "/blog" },
+      ]);
     } else {
-      setNavigation(["Browse Jobs", "About", "Blog"]);
+      setNavigation([
+        { name: "Browse Jobs", href: "/browsejobs" },
+        { name: "About", href: "/about" },
+        { name: "Blog", href: "/blog" },
+      ]);
     }
   }, []);
 
@@ -33,10 +42,10 @@ const Navbar = () => {
             {navigation.map((menu, index) => (
               <li className="mr-3 nav__item" key={index}>
                 <Link
-                  href="/"
+                  href={menu.href || "/"} // Provide a fallback href
                   className="inline-block px-4 py-2 text-lg font-normal text-gray-800 no-underline rounded-md dark:text-gray-200 hover:text-indigo-500 focus:text-indigo-500 focus:bg-indigo-100 focus:outline-none dark:focus:bg-gray-800"
                 >
-                  {menu}
+                  {menu.name}
                 </Link>
               </li>
             ))}

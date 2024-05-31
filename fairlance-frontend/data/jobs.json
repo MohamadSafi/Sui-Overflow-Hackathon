@@ -1,0 +1,32 @@
+[
+  {
+    "jobTitle": "hello",
+    "skillsRequired": "niffer",
+    "jobDescription": "dasdasdasd",
+    "budget": "33",
+    "deadline": "2024-05-03",
+    "image": "hero.png"
+  },
+  {
+    "jobTitle": "hello",
+    "skillsRequired": "niffer",
+    "jobDescription": "dasdasdasd",
+    "budget": "33",
+    "deadline": "2024-05-03",
+    "image": "hero.png"
+  },
+  {
+    "jobTitle": "ds",
+    "skillsRequired": "dsa",
+    "jobDescription": "sda",
+    "budget": "33",
+    "deadline": "2024-05-18"
+  },
+  {
+    "jobTitle": "323",
+    "skillsRequired": "3232",
+    "jobDescription": "3232323",
+    "budget": "22",
+    "deadline": "2024-05-03"
+  }
+]
