@@ -74,16 +74,16 @@ This will launch the application locally. You can then open your browser and nav
 ## 📸 Screen Shots
 
 # Home page
- <img src="./fairlance-frontend/public/img/screenshots/screen1.png" alt="Home page" width="300"/>
+ <img src="./fairlance-frontend/public/img/screenshots/screen1.png" alt="Home page"/>
 
 # Add a job page
- <img src="./fairlance-frontend/public/img/screenshots/screen2.png" alt="Add a job" width="300"/>
+ <img src="./fairlance-frontend/public/img/screenshots/screen2.png" alt="Add a job" />
 
 # Browse jobs page
- <img src="./fairlance-frontend/public/img/screenshots/screen3.png" alt="Browse jobs" width="300"/>
+ <img src="./fairlance-frontend/public/img/screenshots/screen3.png" alt="Browse jobs" />
 
 # Profile page
- <img src="./fairlance-frontend/public/img/screenshots/screen4.png" alt="Profile page" width="300"/>
+ <img src="./fairlance-frontend/public/img/screenshots/screen4.png" alt="Profile page"/>
 
 
 
