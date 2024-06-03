@@ -1,4 +1,3 @@
-// components/Home.js
 "use client";
 
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -15,8 +14,6 @@ import {
 import { useSui } from "../../hooks/useSui";
 import { Ed25519Keypair } from "@mysten/sui.js/keypairs/ed25519";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
-import { Blocks } from "react-loader-spinner";
-import { toast } from "react-hot-toast";
 import { Buffer } from "buffer";
 import { Box, Flex, Text, Button, Select, VStack } from "@chakra-ui/react";
 import Navbar from "../../components/Navbars/navbar";
@@ -27,11 +24,17 @@ import Footer from "../../components/Navbars/footer";
 import EncryptButton from "../../components/Custom/EncryptButton";
 import { FiLogOut, FiEdit } from "react-icons/fi";
 import DashboardCards from "../../components/Custom/DashboardCards";
+import {
+  ensureEphemeralKeyPair,
+  getEphemeralKeyPair,
+  getSalt,
+  getZkProof,
+} from "../../utils/zkLogin";
+import { handleZkLoginAndDWallet } from "../../utils/dWallet";
 
 const Home = () => {
   const [error, setError] = useState(null);
   const [publicKey, setPublicKey] = useState(null);
-  const [txDigest, setTxDigest] = useState(null);
   const [jwtEncoded, setJwtEncoded] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [userAddress, setUserAddress] = useState(null);
@@ -42,6 +45,8 @@ const Home = () => {
   const [transactionInProgress, setTransactionInProgress] = useState(false);
   const [userRole, setUserRole] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [dWalletAddress, setDWalletAddress] = useState(null);
+  const [zkLoginSignature, setZkLoginSignature] = useState(null);
 
   const useIsomorphicLayoutEffect =
     typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -54,7 +59,6 @@ const Home = () => {
     const ephemeralPrivateKey = keypair.secretKey;
     const ephemeralPublicKey = keypair.publicKey;
 
-    // Store only the first 32 bytes of the private key
     const truncatedPrivateKey = ephemeralPrivateKey.slice(0, 32);
 
     const ephemeralPrivateKeyBase64 =
@@ -90,14 +94,10 @@ const Home = () => {
 
     const ephemeralPrivateKeyBase64 = userKeyData.ephemeralPrivateKey;
 
-    // Log the retrieved base64 key
-
-    // Convert the base64 key back to a Uint8Array
     let ephemeralKeyPairArray = Uint8Array.from(
       Buffer.from(ephemeralPrivateKeyBase64, "base64")
     );
 
-    // Ensure the secret key is 32 bytes
     if (ephemeralKeyPairArray.length !== 32) {
       ephemeralKeyPairArray = ephemeralKeyPairArray.slice(0, 32);
     }
@@ -119,23 +119,11 @@ const Home = () => {
     }
   }
 
-  function printUsefulInfo(decodedJwt, userKeyData) {
-    console.log("iat  = " + decodedJwt.iat);
-    console.log("iss  = " + decodedJwt.iss);
-    console.log("sub = " + decodedJwt.sub);
-    console.log("aud = " + decodedJwt.aud);
-    console.log("exp = " + decodedJwt.exp);
-    console.log("nonce = " + decodedJwt.nonce);
-    console.log("ephemeralPublicKey b64 =", userKeyData.ephemeralPublicKey);
-  }
-
   async function getZkProof(forceUpdate = false) {
     setError(null);
     setTransactionInProgress(true);
     const decodedJwt = decode(jwtEncoded);
     const { userKeyData, ephemeralKeyPair } = getEphemeralKeyPair();
-
-    printUsefulInfo(decodedJwt, userKeyData);
 
     const ephemeralPublicKeyArray = fromB64(userKeyData.ephemeralPublicKey);
 
@@ -169,16 +157,11 @@ const Home = () => {
   }
 
   async function checkIfAddressHasBalance(address) {
-    const coins = await suiClient.getCoins({
-      owner: address,
-    });
     let totalBalance = 0;
-    for (const coin of coins.data) {
-      totalBalance += parseInt(coin.balance);
-    }
+
     totalBalance = totalBalance / 1000000000;
     setUserBalance(totalBalance);
-    return enoughBalance(totalBalance);
+    return false;
   }
 
   function enoughBalance(userBalance) {
@@ -252,16 +235,6 @@ const Home = () => {
     const hasEnoughBalance = await checkIfAddressHasBalance(address);
     if (!hasEnoughBalance) {
       await giveSomeTestCoins(address);
-      // toast("As simple as that, You are now a part of us!", {
-      //   icon: "🥳",
-      //   duration: 3000,
-      //   style: {
-      //     borderRadius: "20px",
-      //     background: "#5046e4",
-      //     color: "#fff",
-      //     border: 0,
-      //   },
-      // });
     }
     const storedRole = localStorage.getItem("userRole");
     if (!storedRole) {
@@ -269,6 +242,20 @@ const Home = () => {
     } else {
       setUserRole(storedRole);
     }
+
+    const { ephemeralKeyPair } = getEphemeralKeyPair();
+    console.log("kwttoken:", encodedJwt);
+    console.log("privateKey:", ephemeralKeyPair.keypair.secretKey);
+    console.log("publicKey:", ephemeralKeyPair.keypair.publicKey);
+
+    // const dWalletData = await handleZkLoginAndDWallet({
+    //   jwtToken: encodedJwt,
+    //   privateKey: ephemeralKeyPair.keypair.secretKey,
+    //   publicKey: ephemeralKeyPair.keypair.publicKey,
+    //   userSalt,
+    // });
+    // setDWalletAddress(dWalletData.dWalletAddress);
+    // setZkLoginSignature(dWalletData.zkLoginSignature);
   }
 
   useIsomorphicLayoutEffect(() => {
@@ -399,6 +386,12 @@ const Home = () => {
                 <TerminalOutput>{`User Salt: ${userSalt}`}</TerminalOutput>
                 <TerminalOutput>{`Subject ID: ${subjectID}`}</TerminalOutput>
               </>
+            )}
+            {dWalletAddress && (
+              <TerminalOutput>{`dWallet Address: ${dWalletAddress}`}</TerminalOutput>
+            )}
+            {zkLoginSignature && (
+              <TerminalOutput>{`zkLogin Signature: ${zkLoginSignature}`}</TerminalOutput>
             )}
             {userRole && (
               <TerminalOutput>{`Role: ${

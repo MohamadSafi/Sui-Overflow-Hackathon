@@ -5,63 +5,90 @@ import {
   jwtToAddress,
   getZkLoginSignature,
 } from "@mysten/zklogin";
-import jwt_decode from "jwt-decode";
+import { decode } from "jwt-js-decode";
+import axios from "axios";
+import { Ed25519Keypair } from "@mysten/sui.js/keypairs/ed25519";
+import { Buffer } from "buffer";
 
-const fetchDWalletAddress = async (userSalt) => {
-  const response = await fetch("https://api.dwallet.io/get-address", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+// Generate and store an ephemeral key pair
+export function generateAndStoreEphemeralKeyPair() {
+  const keypair = generateEphemeralKeyPair();
+  const truncatedPrivateKey = keypair.privateKey.slice(0, 32);
+  const ephemeralPrivateKeyBase64 =
+    Buffer.from(truncatedPrivateKey).toString("base64");
+  const ephemeralPublicKeyBase64 = Buffer.from(keypair.publicKey).toString(
+    "base64"
+  );
+
+  localStorage.setItem(
+    "userKeyData",
+    JSON.stringify({
+      ephemeralPrivateKey: ephemeralPrivateKeyBase64,
+      ephemeralPublicKey: ephemeralPublicKeyBase64,
+    })
+  );
+}
+
+// Ensure that an ephemeral key pair exists
+export function ensureEphemeralKeyPair() {
+  const userKeyData = localStorage.getItem("userKeyData");
+  if (!userKeyData) {
+    generateAndStoreEphemeralKeyPair();
+  }
+}
+
+// Retrieve the ephemeral key pair from localStorage
+export function getEphemeralKeyPair() {
+  const userKeyData = JSON.parse(localStorage.getItem("userKeyData"));
+  if (!userKeyData) {
+    throw new Error("userKeyData is missing from localStorage");
+  }
+
+  const ephemeralPrivateKeyBase64 = userKeyData.ephemeralPrivateKey;
+  let ephemeralKeyPairArray = Uint8Array.from(
+    Buffer.from(ephemeralPrivateKeyBase64, "base64")
+  );
+  if (ephemeralKeyPairArray.length !== 32) {
+    ephemeralKeyPairArray = ephemeralKeyPairArray.slice(0, 32);
+  }
+
+  return Ed25519Keypair.fromSecretKey(ephemeralKeyPairArray);
+}
+
+// Get the salt for a given subject
+export async function getSalt(subject, jwtEncoded) {
+  const getSaltRequest = { subject, jwt: jwtEncoded };
+  const response = await axios.post("/api/userinfo/get/salt", getSaltRequest);
+  if (response?.data.status === 200) {
+    return response.data.salt;
+  } else {
+    throw new Error("Failed to get salt");
+  }
+}
+
+// Fetch the zk proof
+export async function getZkProof(jwtEncoded, userSalt) {
+  const decodedJwt = decode(jwtEncoded);
+  const { userKeyData, ephemeralKeyPair } = getEphemeralKeyPair();
+  const extendedEphemeralPublicKey = getExtendedEphemeralPublicKey(
+    ephemeralKeyPair.publicKey
+  );
+
+  const zkProof = await getZKProof(
+    jwtEncoded,
+    extendedEphemeralPublicKey,
+    userSalt
+  );
+
+  const zkLoginSignature = getZkLoginSignature({
+    jwt: jwtEncoded,
+    ephemeralKeyPair: {
+      privateKey: ephemeralKeyPair.privateKey,
+      publicKey: ephemeralKeyPair.publicKey,
     },
-    body: JSON.stringify({ salt: userSalt }),
+    zkProof,
+    userSalt,
   });
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch dWallet address");
-  }
-
-  const data = await response.json();
-  return data.address;
-};
-
-export const handleZkLoginAndDWallet = async (jwtToken) => {
-  try {
-    const { privateKey, publicKey } = generateEphemeralKeyPair();
-    const decodedJwt = jwt_decode(jwtToken);
-    let userSalt = localStorage.getItem("userSalt");
-
-    if (!userSalt) {
-      userSalt = crypto.randomUUID(); // Generate a unique salt
-      localStorage.setItem("userSalt", userSalt);
-    }
-
-    const zkLoginUserAddress = jwtToAddress(jwtToken, userSalt);
-    const extendedEphemeralPublicKey = getExtendedEphemeralPublicKey(publicKey);
-    const zkProof = await getZKProof(
-      jwtToken,
-      extendedEphemeralPublicKey,
-      userSalt
-    );
-    const zkLoginSignature = getZkLoginSignature({
-      jwt: jwtToken,
-      ephemeralKeyPair: { privateKey, publicKey },
-      zkProof,
-      userSalt,
-    });
-
-    const dWalletAddress = await fetchDWalletAddress(userSalt);
-
-    console.log("User Sui Address:", zkLoginUserAddress);
-    console.log("zkLogin Signature:", zkLoginSignature);
-    console.log("dWallet Address:", dWalletAddress);
-
-    return {
-      zkLoginUserAddress,
-      dWalletAddress,
-      decodedJwt,
-    };
-  } catch (error) {
-    console.error("Error during zkLogin and dWallet integration:", error);
-    throw error;
-  }
-};
+  return { zkProof, zkLoginSignature };
+}

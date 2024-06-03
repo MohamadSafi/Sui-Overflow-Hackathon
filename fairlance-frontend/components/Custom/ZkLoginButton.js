@@ -9,11 +9,13 @@ import { decode } from "jwt-js-decode";
 
 export default function Home() {
   const { suiClient } = useSui();
+  const { getEpoch } = useSui();
+
   const [loginUrl, setLoginUrl] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
 
   async function prepareLogin() {
-    const { epoch } = await suiClient.getLatestSuiSystemState();
+    const epoch = await getEpoch();
 
     const maxEpoch = parseInt(epoch) + 2;
     const ephemeralKeyPair = new Ed25519Keypair();
