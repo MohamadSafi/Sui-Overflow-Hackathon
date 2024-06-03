@@ -1,4 +1,5 @@
-module freelancing_platform::freelancing_platform {
+
+module fairlance::fairlance {
 
     use std::string::String;
     use sui::object::{new};
@@ -73,5 +74,5 @@ module freelancing_platform::freelancing_platform {
         achievement
     }
 
-
 }
+
