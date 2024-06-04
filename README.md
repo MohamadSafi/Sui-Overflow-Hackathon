@@ -7,6 +7,11 @@
 
 **FairLance** is a decentralized freelancing platform that leverages blockchain technology to provide fair opportunities for freelancers worldwide. Utilizing Sui technologies, FairLance ensures secure, efficient, and transparent interactions for both freelancers and clients.
 
+- ***Website***: [link](sui-overflow-hackathon.vercel.app)
+- ***Object Packages***: [suiscan](https://suiscan.xyz/devnet/object/0x8a98e0a0788468d8cdeab8034671438bdc6631385fecf9fd48ed7eaad8d9bbdf/contracts)
+
+
+
 ## 📚 Table of Contents
 
 - [Introduction](#introduction)
@@ -34,7 +39,7 @@ FairLance aims to revolutionize the freelancing industry by providing a platform
 
 ## 🛠 Technology Stack
 
-- **Smart Contracts**: Move
+- **Smart Contracts**: Move (You can also find the contract on [suiscan](https://suiscan.xyz/devnet/object/0x8a98e0a0788468d8cdeab8034671438bdc6631385fecf9fd48ed7eaad8d9bbdf/contracts))
 - **Frontend**: Next.js, Tailwind CSS, ChakuraUI
 - **Login**: ZKlogin (Zero Knowledge Proof)
 - **Wallet**: dwallet
@@ -89,7 +94,8 @@ This will launch the application locally. You can then open your browser and nav
 
 ## ✅ TODO
 
-- **Deploy Contracts**: We still need to deploy the contracts on Sui Network
+- **Deploy Contracts**: We still need to deploy the contracts on Sui Network. ✅**DONE**: [suiscan](https://suiscan.xyz/devnet/object/0x8a98e0a0788468d8cdeab8034671438bdc6631385fecf9fd48ed7eaad8d9bbdf/contracts)
+
 - **Friendly usage of Dwallet**: Currently we integrated zkLogin with dWallet but the user doesn't have the visual control over his wallet
 - **Replace Mock data**: Getting the jobs and adding jobs from chain
 - **Achivment Board**: Adding Achivment Board and goals for users to get in FUD airdrop
